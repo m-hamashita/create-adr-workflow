@@ -1,0 +1,18 @@
+name: copy-discussions
+on:
+  workflow_dispatch:
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.18.0"
+      - name: Install dependencies
+        run: go install github.com/rerost/issue-creator@v0.1.18
+      - name: Publish a report
+        run: |
+          issue-creator create \
+            --GithubAccessToken ${{ secrets.GITHUB_TOKEN }} \
+            https://github.com/m-hamashita/study-github-actions/discussions/1
