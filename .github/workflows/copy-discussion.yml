@@ -2,24 +2,10 @@ name: copy-discussions
 on:
   workflow_dispatch:
 jobs:
-  main:
+  create-issue:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - uses: rerost/issue-creator@v0.1.18
         with:
-          go-version: "1.18.0"
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/go/pkg/mod
-          key: test
-          restore-keys: test
-      - name: Install dependencies
-        run: go install github.com/rerost/issue-creator@v0.1.18
-      - name: Publish a report
-        run: |
-          issue-creator create \
-            --GithubAccessToken ${{ secrets.GITHUB_TOKEN }} \
-            https://github.com/m-hamashita/study-github-actions/discussions/1
+          template-issue: 1
+          discussion: true
