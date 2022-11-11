@@ -1,0 +1,14 @@
+name: create-adr
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        type: string
+        description: 'Title of the ADR'
+jobs:
+  create-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create ADR
+        run: sh create-discussion.sh test_title
