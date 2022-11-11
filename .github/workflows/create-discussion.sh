@@ -8,7 +8,7 @@ ADRNUM=$(gh api graphql --jq '.data.repository.discussions.nodes[].title' -f que
          }
        }
      }
- }'| grep "ADR" | sed -e 's/ADR \([0-9]*\).*/\1/' | awk '$0>x{x=$0};END{print x+1}')
+ }'| sed -e 's/ADR \([0-9]*\).*/\1/' | awk '$0>x{x=$0};END{print x+1}')
 
 title="ADR "$ADRNUM". "$1
 body=$(cat ./.github/workflows/sample_discussion_body)
