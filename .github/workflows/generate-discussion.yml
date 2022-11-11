@@ -11,4 +11,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Create ADR
-        run: sh create-discussion.sh test_title
+        run: sh ./.github/workflows/create-discussion.sh test_title
