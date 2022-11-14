@@ -13,7 +13,7 @@ ADRNUM=$(gh api graphql --jq '.data.repository.discussions.nodes[].title' -f que
 title="ADR "$ADRNUM". "$1
 body=$(gh api graphql --jq '.data.repository.discussion.body' -f query='query {
       repository(owner: "m-hamashita", name: "study-github-actions") {
-        discussion(number: 50) {
+        discussion(number: 58) {
           body
         }
       }
