@@ -1,1 +1,5 @@
-# study-github-actions
+# create-adr-workflow
+
+## How to use
+
+WIP
