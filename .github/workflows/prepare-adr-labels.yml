@@ -1,4 +1,4 @@
-name: create-adr-labels
+name: prepare-adr-labels
 on:
   workflow_dispatch:
 jobs:
