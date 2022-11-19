@@ -1,9 +1,11 @@
 #!/bin/sh
+set -euo pipefail
 
 REPOSITORY_OWNER="m-hamashita"
 REPOSITORY_NAME="create-adr-workflow"
 TEMPLATE_ID=57
 
+# get repositoryId
 repository_id=$(gh api graphql -f query='
     query {
         repository(owner: "'$REPOSITORY_OWNER'", name: "'$REPOSITORY_NAME'") {
@@ -11,6 +13,7 @@ repository_id=$(gh api graphql -f query='
         }
     }' --jq '.data.repository.id')
 
+# get categoryId
 category_id=$(gh api graphql -f query='
     query {
         repository(owner: "'$REPOSITORY_OWNER'", name: "'$REPOSITORY_NAME'") {
@@ -20,6 +23,7 @@ category_id=$(gh api graphql -f query='
         }
     }' --jq '.data.repository.discussionCategory.id')
 
+# increment ADR number
 adr_num=$(gh api graphql -f query='
     query {
         repository(owner: "'$REPOSITORY_OWNER'", name: "'$REPOSITORY_NAME'") {
@@ -41,7 +45,7 @@ body=$(gh api graphql -f query='
         }
     }' --jq ".data.repository.discussion.body")
 
-# create discussion
+# create ADR discussion and get discussionId
 discussion_id=$(gh api graphql -f query='
     mutation CreateDiscussion($title: String!, $body: String!){
         createDiscussion(input: {repositoryId: "'$repository_id'", categoryId: "'$category_id'", body: $body, title: $title}) {
@@ -51,7 +55,7 @@ discussion_id=$(gh api graphql -f query='
         }
     }' --jq ".data.createDiscussion.discussion.id" -f "body=$body" -f "title=$title")
 
-# get draft label id
+# get draft labelId
 draft_label_id=$(gh api graphql -f query='
     query {
         repository(owner: "'$REPOSITORY_OWNER'", name: "'$REPOSITORY_NAME'") {
@@ -61,7 +65,7 @@ draft_label_id=$(gh api graphql -f query='
         }
     }' --jq '.data.repository.label.id')
 
-# add label
+# add draft label to discussion
 gh api graphql -f query='
     mutation($labelableId:ID!, $labelIds:[ID!]!) {
         addLabelsToLabelable(input: {labelableId: $labelableId, labelIds: $labelIds}) {
