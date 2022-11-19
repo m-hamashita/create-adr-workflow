@@ -39,10 +39,25 @@ body=$(gh api graphql --jq '.data.repository.discussion.body' -f query='{
   }'
 )
 
-gh api graphql -f "body=$body" -f "title=$title" -f query='mutation CreateDiscussion($title: String!, $body: String!){
+discussion_id=$(gh api graphql --jq ".data.createDiscussion.discussion.id" -f "body=$body" -f "title=$title" -f query='mutation CreateDiscussion($title: String!, $body: String!){
     createDiscussion(input: {repositoryId: "'$repository_id'", categoryId: "'$category_id'", body: $body, title: $title}) {
       discussion {
           id
       }
     }
-  }'
+}')
+
+draft_label_id=$(gh api graphql --jq '.data.repository.label.id' -f query='{
+        repository(owner: "'$REPOSITORY_OWNER'", name: "'$REPOSITORY_NAME'") {
+          label(name: "ADR:draft") {
+            id
+          }
+        }
+    }')
+
+gh api graphql -f query='
+  mutation($user:String!, $labelableId:ID!, $labelIds:[ID!]!) {
+    addLabelsToLabelable(input: {clientMutationId: $user, labelableId: $labelableId, labelIds: $labelIds}) {
+      clientMutationId
+    }
+  }' -f labelableId=$discussion_id -f labelIds=$draft_label_id -f user=$user
