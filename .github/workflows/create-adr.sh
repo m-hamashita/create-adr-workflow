@@ -35,7 +35,7 @@ adr_num=$(gh api graphql -f query='
         }
     }' --jq '.data.repository.discussions.nodes[].title' | grep ADR | sed -e 's/ADR \([0-9]*\).*/\1/' | awk '$0>x{x=$0};END{print x+1}')
 
-title="ADR "$adr_num". "$1
+title="ADR "$adr_num". "${1:-""}
 body=$(gh api graphql -f query='
     query {
         repository(owner: "'$REPOSITORY_OWNER'", name: "'$REPOSITORY_NAME'") {
@@ -68,7 +68,7 @@ draft_label_id=$(gh api graphql -f query='
 # add draft label to discussion
 gh api graphql -f query='
     mutation($labelableId:ID!, $labelIds:[ID!]!) {
-        addLabelsToLabelable(input: {labelableId: $labelableId, labelIds: $labelIds}) {
+        addLabelsToLabelable(input: {clientMutationId: "", labelableId: $labelableId, labelIds: $labelIds}) {
             clientMutationId
         }
     }' -f labelableId=$discussion_id -f labelIds=$draft_label_id
