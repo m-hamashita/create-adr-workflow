@@ -1,5 +1,5 @@
 #!/bin/sh
-set -euo pipefail
+set -eu
 
 REPOSITORY_OWNER="m-hamashita"
 REPOSITORY_NAME="create-adr-workflow"
